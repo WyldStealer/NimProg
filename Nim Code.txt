@@ -1,0 +1,70 @@
+//Mei
+//10:05:23
+//Demonstrate SLO 1 by coding a functioning version of the mathmatical game of Nim 
+
+
+
+
+package main
+
+import (
+	"fmt"
+//time and math random allow the computer to select a random number based on seconds since 1970
+  "time"
+  "math/rand"
+)
+
+
+func main(){
+//start by seeding the random time for the computers turn function and then describing the total # of sticks the # of remaining sticks. Flag variable is set to true initally so players turn comes first
+  rand.Seed(time.Now().UnixNano())
+  var TotalSticks int
+  var RemainingSticks int
+    
+  ThePlayersTurn := true 
+
+//Allows for a diffrent game each time by allowing player to choose # of sticks in a game and then sets that input to total sticks and initializes remaining sticks
+  fmt.Print("How manny stiks u is wan pla w/? (recommended 10<):")
+  fmt.Scanln(&TotalSticks)
+
+  RemainingSticks = TotalSticks
+
+//printf allows for certain variables to be called in the middle of a text. In this case it refrences the Total # of sticks that got chosen.
+  fmt.Printf("Time to play Nim!\nThere will be %d sticks in the pile.\nYou will take between 1 and 3 sticks each turn.\nThe goal is to avoid taking the final stick remaining.\n", TotalSticks)
+
+//as long as the remaining sticks is greater than zero, create new variable for how many stucks get taken from the stucks total. if ThePlayersTurn is true, ise user input to determine how many sticks get taken (AmountOfSticksTaken)
+  for RemainingSticks > 0 {
+    var AmountOfSticksTaken int
+    if ThePlayersTurn {
+      fmt.Print("\nIt is your turn to choose. How many sticks do you want to take?: ")
+      fmt.Scan(&AmountOfSticksTaken)
+//if ThePlayersTurn is false, set the amoubt of sticks taken variable equal to the value returned by the random number generator called TheComputersTurn
+    } else {
+     AmountOfSticksTaken = TheComputersTurn(RemainingSticks)
+      fmt.Printf("\nThe Computer took %d sticks\n", AmountOfSticksTaken) 
+    }
+//checks if the input given by either the user or the computer is within the range if 1 to 3. if it is not, the code is sent back to the beginning of the loop and user is forced inout something new
+    if AmountOfSticksTaken < 1 || AmountOfSticksTaken > 3 || AmountOfSticksTaken > RemainingSticks {
+      fmt.Println("ERROR:INVALID:INPUT DIFFRENT VALUE BETWEEN 1&3:")
+      continue
+    }
+//if the input from the user or computer is valid, the input is subtracted from the current value of the stick pile and the product of that is set to the stuck stick pile total
+    RemainingSticks -= AmountOfSticksTaken
+    fmt.Printf("\n# of sticks remaining: %d\n", RemainingSticks)
+//reverse the boolean logic of this Players turn variable so that the program alternates between player and computer inputs
+    ThePlayersTurn = !ThePlayersTurn
+  }
+
+
+//after the for loop has resovled, the boolean value of the flag variable tells the computer whos turn it was when the game ended and therefore, by the rules of NIM, who won. (the logic still reverses at the end of the final round).
+  if ThePlayersTurn {
+    fmt.Println("\nAYOO! You Won!!")
+  } else {
+    fmt.Println("\nSorry, The Computer Wins. Try Again.")
+  }
+
+}
+// seperate function that returns a random int between 0 and 2, shifted up to 1 through 3
+func TheComputersTurn (RemainingSticks int) int {
+  return rand.Intn(3) + 1
+}
